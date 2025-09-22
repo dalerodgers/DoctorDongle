@@ -55,7 +55,7 @@ void SerialPortSelector::onAboutToShow()
         QAction* p = new QAction( portName );
         connect( p, SIGNAL( triggered(bool) ), this, SLOT( onSelected(bool) ) );
 
-        if( portInfo.isBusy() || portInfo.isNull() )
+        if( /*portInfo.isBusy() ||*/ portInfo.isNull() )
         {
             p->setEnabled( false );
         }
