@@ -9,17 +9,29 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../common/Receiver.cpp \
     MessageHandler.cpp \
+    PairedDeviceSelector.cpp \
+    Scan.cpp \
+    SerialPort.cpp \
     SerialPortSelector.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    ../common/Device.h \
+    ../common/Receiver.h \
     MessageHandler.h \
+    PairedDeviceSelector.h \
+    Scan.h \
+    SerialPort.h \
     SerialPortSelector.h \
     mainwindow.h
 
+INCLUDEPATH += ../common
+
 FORMS += \
+    Scan.ui \
     mainwindow.ui
 
 QT += serialport
