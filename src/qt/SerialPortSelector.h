@@ -11,6 +11,8 @@ public:
     SerialPortSelector( QMenu& menu );
     ~SerialPortSelector();
 
+    void overrideName( const QString& name );
+
 signals:
     void portNameChanged( QString newName );
 

@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QFile>
 #include <QMainWindow>
 #include "Receiver.h"
 
@@ -40,6 +41,7 @@ protected:
 
 private:
     Ui::MainWindow *ui_;
+    QFile file_;
     PairedDeviceSelector* pairedDeviceSelector_;
     SerialPort* serialPort2_;
     SerialPortSelector* serialPortSelector_;

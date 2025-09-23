@@ -24,6 +24,13 @@ SerialPortSelector::~SerialPortSelector()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void SerialPortSelector::overrideName( const QString& name )
+{
+    currentPortName_ = name;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void SerialPortSelector::clearActions()
 {
     for( QAction* action : menu_.actions() )
@@ -50,7 +57,7 @@ void SerialPortSelector::onAboutToShow()
 
     for (const QSerialPortInfo &portInfo : serialPortInfos)
     {
-        const QString portName = portInfo.portName();
+        const QString portName = portInfo.systemLocation();
 
         QAction* p = new QAction( portName );
         connect( p, SIGNAL( triggered(bool) ), this, SLOT( onSelected(bool) ) );
@@ -86,7 +93,7 @@ void SerialPortSelector::onSelected( bool checked )
 
         if( newName != currentPortName_ )
         {
-            currentPortName_ = newName;
+            overrideName( newName );
             emit portNameChanged( currentPortName_ );
         }
     }

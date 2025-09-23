@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow( parent ),
     Receiver(),
     ui_( new Ui::MainWindow ),
+    file_( "comPort.txt" ),
     scan_( nullptr ),
     isOkay_( false )
 {
@@ -25,6 +26,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->menuPairing->setEnabled( false );
     ui_->slider_Quality->setEnabled( false );
     connect( ui_->slider_Quality, SIGNAL( valueChanged(int) ), this, SLOT( onAudioChanged(int) ) );
+
+    QFont f = ui_->textEdit->font();
+    f.setPointSize( 7 );
+    ui_->textEdit->setFont( f );
 
     MessageHandler::GetInstance().set_TextEdit( ui_->textEdit );
 
@@ -42,12 +47,34 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui_->spinBox_A2DP->setEnabled( false );
     ui_->spinBox_HFP->setEnabled( false );
+
+    const bool exists = file_.exists();
+
+    if( file_.open( QIODevice::ReadWrite | QIODevice::Text ) )
+    {
+        if( exists )
+        {
+            QTextStream in( &file_ );
+            QString filename;
+            in >> filename;
+
+            if( !filename.isEmpty() )
+            {
+                onPortNameChanged( filename );
+            }
+        }
+    }
+    else
+    {
+        qWarning( "Couldn't open '%s'", file_.fileName().toStdString().c_str() );
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 MainWindow::~MainWindow()
 {
+    file_.close();
     delete serialPort2_;
     delete serialPortSelector_;
     delete pairedDeviceSelector_;
@@ -75,6 +102,11 @@ void MainWindow::onPortNameChanged( QString newName )
     }
     else
     {
+        file_.resize( 0 );
+        QTextStream out( &file_ );
+        out << newName;
+        serialPortSelector_->overrideName( newName );
+
         transmit( "AT+NAME=Doctor Dongle,0" );
         transmit( "AT+A2DPSTAT" );
         transmit( "AT+HFPSTAT" );
@@ -97,6 +129,9 @@ void MainWindow::onDeleteAll( bool checked )
 
     if( ret != QMessageBox::Cancel )
     {
+        ui_->device_A2DP->setText( "" );
+        ui_->device_HFP->setText( "" );
+
         transmit( "AT+PLIST=0" );
         transmit( "AT+REBOOT" );
         QTimer::singleShot( 5000, this, SLOT( refreshPairedList() ) );
@@ -144,7 +179,7 @@ void MainWindow::on_A2DP_Connected( const bool isConnected )
 
 void MainWindow::on_A2DP_Device( const std::string& deviceName )
 {
-    qWarning( "A2DP Device: %s", deviceName.c_str() );
+    ui_->device_A2DP->setText( deviceName.c_str() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -192,7 +227,7 @@ void MainWindow::on_HFP_Connected( const bool isConnected )
 
 void MainWindow::on_HFP_Device( const std::string& deviceName )
 {
-    qWarning( "HFP Device: %s", deviceName.c_str() );
+    ui_->device_HFP->setText( deviceName.c_str() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -290,8 +325,12 @@ void MainWindow::onDeviceSelected( QString macAddress )
     const QString connectStr = "AT+A2DPCONN=" + macAddress;
 
     transmit( "AT+AUDROUTE=0" );
+
     transmit( "AT+A2DPDISC" );
     transmit( "AT+HFPDISC" );
+    ui_->device_A2DP->setText( "" );
+    ui_->device_HFP->setText( "" );
+
     transmit( connectStr.toStdString().c_str() );
     transmit( "AT+AUDROUTE=1" );
     QTimer::singleShot( 5000, this, SLOT( refreshPairedList() ) );
