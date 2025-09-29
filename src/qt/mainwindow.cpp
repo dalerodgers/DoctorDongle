@@ -111,6 +111,7 @@ void MainWindow::onPortNameChanged( QString newName )
         transmit( "AT+A2DPSTAT" );
         transmit( "AT+HFPSTAT" );
         transmit( "AT+MICGAIN" );
+        tranmsit( "AT+SPKVOL=15,15" );
         on_Audio_HiQ();
         refreshPairedList();
     }
