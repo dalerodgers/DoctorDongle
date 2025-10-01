@@ -9,13 +9,14 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class Commander;
 class PairedDeviceSelector;
 class Scan;
 class SerialPort;
 class SerialPortSelector;
 class QSerialPort;
 
-class MainWindow : public QMainWindow, Receiver
+class MainWindow : public QMainWindow, Receiver::RequiredIf
 {
     Q_OBJECT
 
@@ -41,6 +42,8 @@ protected:
 
 private:
     Ui::MainWindow *ui_;
+    Commander* commander_;
+    Receiver* receiver_;
     QFile file_;
     PairedDeviceSelector* pairedDeviceSelector_;
     SerialPort* serialPort2_;
@@ -49,8 +52,6 @@ private:
     Scan* scan_;
     QSerialPort* serialPort_;
     bool isOkay_;
-
-    void transmit( const char* c_str, const bool waitForOkay = true );
 
     void on_Audio_HiQ();
     void on_HeadSet_LoQ();
@@ -67,6 +68,6 @@ private slots:
     void onChanged_A2DP_MicGain( int val );
     void onChanged_HFP_MicGain( int val );
 
-    void refreshPairedList();
+    void refresh();
 };
 #endif // MAINWINDOW_H

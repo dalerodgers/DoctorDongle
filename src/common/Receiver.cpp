@@ -2,7 +2,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Receiver::Receiver()
+Receiver::Receiver( RequiredIf& requiredIf ) :
+    requiredIf_( requiredIf )
 {
     a2dp_isConnected_ = false;
     hfp_isConnected_ = false;
@@ -24,11 +25,11 @@ void Receiver::OnReponse( const std::string& str )
 {
     if( str == "OK" )
     {
-        on_OK();
+        requiredIf_.on_OK();
     }
     else if( str.find( "ERR" ) == 0U )
     {
-        on_ERR();
+        requiredIf_.on_ERR();
     }
     else
     {
@@ -47,7 +48,7 @@ void Receiver::OnReponse( const std::string& str )
             }
             else if( list.at(0).compare("+AUDROUTE") == 0 )
             {
-                on_AUDROUTE( list.at(1) );
+                requiredIf_.on_AUDROUTE( list.at(1) );
             }
             else if( list.at(0).compare("+HFPDEV") == 0 )
             {
@@ -107,7 +108,7 @@ void Receiver::parse_A2DPDEV( const std::string& val )
 
     if( vals.size() == 2U )
     {
-        on_A2DP_Device( vals.at(1) );
+        requiredIf_.on_A2DP_Device( vals.at(1) );
     }
 }
 
@@ -131,7 +132,7 @@ void Receiver::parse_A2DPSTAT( const std::string& val )
         if( a2dp_isConnected_ != new_a2dp_isConnected )
         {
             a2dp_isConnected_ = new_a2dp_isConnected;
-            on_A2DP_Connected( a2dp_isConnected_ );
+            requiredIf_.on_A2DP_Connected( a2dp_isConnected_ );
         }
     }
 }
@@ -145,7 +146,7 @@ void Receiver::parse_HFPDEV( const std::string& val )
 
     if( vals.size() == 2U )
     {
-        on_HFP_Device( vals.at(1) );
+        requiredIf_.on_HFP_Device( vals.at(1) );
     }
 }
 
@@ -169,7 +170,7 @@ void Receiver::parse_HFPSTAT( const std::string& val )
         if( hfp_isConnected_ != new_hfp_isConnected )
         {
             hfp_isConnected_ = new_hfp_isConnected;
-            on_HFP_Connected( hfp_isConnected_ );
+            requiredIf_.on_HFP_Connected( hfp_isConnected_ );
         }
     }
 }
@@ -183,8 +184,8 @@ void Receiver::parse_MICGAIN( const std::string& val )
 
     if( vals.size() == 2U )
     {
-        on_A2DP_MicGain( atoi( vals.at(0).c_str() ) );
-        on_HFP_MicGain( atoi( vals.at(1).c_str() ) );
+        requiredIf_.on_A2DP_MicGain( atoi( vals.at(0).c_str() ) );
+        requiredIf_.on_HFP_MicGain( atoi( vals.at(1).c_str() ) );
     }
 }
 
@@ -201,7 +202,7 @@ void Receiver::parse_PLIST( const std::string& val )
     }
     else if( ( vals.size() == 1U ) && vals.at(0).at(0) == 'E' )
     {
-        on_PairedList( pairedList_ );    // end of PLIST report received
+        requiredIf_.on_PairedList( pairedList_ );    // end of PLIST report received
         pairedList_.clear();
     }
     else
@@ -223,7 +224,7 @@ void Receiver::parse_SCAN( const std::string& val )
     }
     else if( ( vals.size() == 1U ) && vals.at(0).at(0) == 'E' )
     {
-        on_ScanList( scanList_ );    // end of SCAN report received
+        requiredIf_.on_ScanList( scanList_ );    // end of SCAN report received
         scanList_.clear();
     }
     else
