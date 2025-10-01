@@ -23,7 +23,7 @@ void Menu_Scanned::Start()
 
     while( ( iter != Callbacks::scanList.end() ) && ( i< Menu::MAX_OPTIONS ) )
     {
-        Menu::setOption(i, iter->name.c_str(), Callbacks::Menu_Scanned_N[i] );
+        Menu::setOption(i, iter->name().c_str(), Callbacks::Menu_Scanned_N[i] );
 
         iter++;
         i++;

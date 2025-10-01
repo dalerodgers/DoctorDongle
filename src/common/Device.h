@@ -7,7 +7,7 @@ class Device
 {
 public:
     Device( const std::string& name, const std::string& macAddress ) :
-        name_( name),
+        name_( name ),
         macAddress_( macAddress )
     {
         // do nothing
@@ -24,8 +24,8 @@ public:
     }
 
 private:
-    const std::string name_;
-    const std::string macAddress_;
+    std::string name_;
+    std::string macAddress_;
 };
 
 #endif // Device_H

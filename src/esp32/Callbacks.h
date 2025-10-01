@@ -1,21 +1,19 @@
 #ifndef Callbacks_H
 #define Callbacks_H
 
-#include <string>
-#include <vector>
 #include "Menu.h"
+#include "common/Device.h"
+#include "common/Receiver.h"
 
 class Button2;
 
-struct Device
-{
-   std::string name;
-   std::string macAddress;
-};
-
-class Callbacks
+class Callbacks : public Receiver::RequiredIf
 {
 public:
+    static bool dummyPin;
+
+
+
     static void loop();
 
     static void set_Menu( Menu& menu );
@@ -51,14 +49,35 @@ public:
     static void Menu_Delete__Delete();
     static void Menu_Delete__BACK();    
 
-    static void OnScanned( std::vector<Device>& list );
-
     static std::vector<Device> pairedList;
     static std::vector<Device> scanList;
 
+    static bool isConnected_A2DP;
+    static bool isConnected_HFP;
+    static std::string deviceName;
+    
+public://protected:
+    virtual void on_OK() override;
+    virtual void on_ERR() override;
+
+    virtual void on_A2DP_Connected( const bool isConnected ) override;
+    virtual void on_A2DP_Device( const std::string& deviceName ) override;
+    virtual void on_A2DP_MicGain( const int val ) override;
+    virtual void on_AUDROUTE( const std::string& val ) override;
+    virtual void on_HFP_Connected( const bool isConnected ) override;
+    virtual void on_HFP_Device( const std::string& deviceName ) override;
+    virtual void on_HFP_MicGain( const int val ) override;
+    virtual void on_PairedList( const std::vector<Device>& deviceList ) override;
+    virtual void on_ScanList( const std::vector<Device>& deviceList ) override;
+
 private:
     static Menu* menu_;
-    static unsigned long lastButtonPress_;
+    static unsigned long lastButtonPress_;    
 };
+
+namespace Globals
+{
+    extern Callbacks callbacks;
+}
 
 #endif

@@ -23,7 +23,7 @@ void Menu_PreviousConnections::Start()
 
     while( ( iter != Callbacks::pairedList.end() ) && ( i< Menu::MAX_OPTIONS ) )
     {
-        Menu::setOption(i, iter->name.c_str(), Callbacks::Menu_PreviousConnections_N[i] );
+        Menu::setOption(i, iter->name().c_str(), Callbacks::Menu_PreviousConnections_N[i] );
 
         iter++;
         i++;

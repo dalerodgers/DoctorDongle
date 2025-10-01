@@ -7,8 +7,8 @@
 #include "Button2.h"
 #include "Menu_Main.h"
 #include "Callbacks.h" 
-
 #include "Globals.h"
+#include "Status.h"
 
 #define ADC_EN              14  //ADC_EN is the ADC detection enable port
 #define ADC_PIN             34
@@ -45,13 +45,15 @@ void setup()
     Serial.begin(115200);
     Serial.println("Start");
 
+    Status::initialise();
+
     /*
     ADC_EN is the ADC detection enable port
     If the USB port is used for power supply, it is turned on by default.
     If it is powered by battery, it needs to be set to high level
     */
-    pinMode(ADC_EN, OUTPUT);
-    digitalWrite(ADC_EN, HIGH);
+    //pinMode(ADC_EN, OUTPUT);
+    //digitalWrite(ADC_EN, HIGH);
 
     Globals::tft.init();
     Globals::tft.setRotation(1);
@@ -73,8 +75,10 @@ void setup()
     button_DOWN.setClickHandler( &Callbacks::button_DOWN );
     button_DOWN.setDoubleClickHandler( &Callbacks::button_ENTER );
 
-    Callbacks::pairedList.push_back( { "Sea of Tranquility", "12345678" } );
-    Callbacks::pairedList.push_back( { "Bob the dooley", "ABCDEFGH" } );
+    std::vector<Device> eric;
+    eric.push_back( { "Sea of Tranquility", "12345678" } );
+    eric.push_back( { "Bob the dooley", "ABCDEFGH" } );
+    Globals::callbacks.on_PairedList( eric );
 
     Callbacks::clr_Menu();
 }
@@ -85,4 +89,5 @@ void loop()
     button_DOWN.loop();
 
     Callbacks::loop();
+    Status::loop();
 }
