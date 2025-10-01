@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "Receiver.h"
+#include "Commander.h"
 #include "ui_mainwindow.h"
 
 #include "MessageHandler.h"
@@ -16,7 +16,6 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow( parent ),
-    Receiver(),
     ui_( new Ui::MainWindow ),
     file_( "comPort.txt" ),
     scan_( nullptr ),
@@ -32,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui_->textEdit->setFont( f );
 
     MessageHandler::GetInstance().set_TextEdit( ui_->textEdit );
+
+    commander_ = new Commander;
+    receiver_ = new Receiver( *this );
 
     pairedDeviceSelector_ = new PairedDeviceSelector( *( ui_->menuPairing ) );
     connect( pairedDeviceSelector_, SIGNAL( deviceSelected(QString) ), this, SLOT( onDeviceSelected(QString) ) );
@@ -75,9 +77,11 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     file_.close();
+    delete commander_;
     delete serialPort2_;
     delete serialPortSelector_;
     delete pairedDeviceSelector_;
+    delete receiver_;
     MessageHandler::GetInstance().set_TextEdit( nullptr );
     delete ui_;
 }
@@ -88,10 +92,11 @@ void MainWindow::onPortNameChanged( QString newName )
 {
     if( nullptr != serialPort2_ )
     {
+        commander_->clr_RequiredIf();
         delete serialPort2_;
     }
 
-    serialPort2_ = new SerialPort( newName, *this );
+    serialPort2_ = new SerialPort( newName, *receiver_ );
 
     if( !serialPort2_->IsOpen() )
     {
@@ -107,13 +112,8 @@ void MainWindow::onPortNameChanged( QString newName )
         out << newName;
         serialPortSelector_->overrideName( newName );
 
-        transmit( "AT+NAME=Doctor Dongle,0" );
-        transmit( "AT+A2DPSTAT" );
-        transmit( "AT+HFPSTAT" );
-        transmit( "AT+MICGAIN" );
-        tranmsit( "AT+SPKVOL=15,15" );
-        on_Audio_HiQ();
-        refreshPairedList();
+        commander_->set_RequiredIf( *serialPort2_ );
+        commander_->defaults();
     }
 }
 
@@ -133,27 +133,17 @@ void MainWindow::onDeleteAll( bool checked )
         ui_->device_A2DP->setText( "" );
         ui_->device_HFP->setText( "" );
 
-        transmit( "AT+PLIST=0" );
-        transmit( "AT+REBOOT" );
-        QTimer::singleShot( 5000, this, SLOT( refreshPairedList() ) );
+        commander_->clr_PLIST();
+        commander_->reboot();
+        QTimer::singleShot( 5000, this, SLOT( refresh() ) );
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::transmit( const char* c_str, const bool waitForOkay )
+void MainWindow::refresh()
 {
-    if( nullptr != serialPort2_ )
-    {
-        serialPort2_->Transmit( c_str, waitForOkay );
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-void MainWindow::refreshPairedList()
-{
-    transmit( "AT+PLIST", false );
+    commander_->defaults();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -275,14 +265,14 @@ void MainWindow::on_ScanList( const std::vector<Device>& deviceList )
 
 void MainWindow::on_Audio_HiQ()
 {
-    transmit( "AT+AUDROUTE=1" );
+    commander_->set_AUDROUTE__A2DP();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::on_HeadSet_LoQ()
 {
-    transmit( "AT+AUDROUTE=2" );
+    commander_->set_AUDROUTE__HFP();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -309,11 +299,10 @@ void MainWindow::onScanRequest( bool checked )
 {
     Q_UNUSED( checked );
 
-    transmit( "AT+SCAN=1", false );
-
     scan_ = new Scan( this );
     connect( scan_, SIGNAL( deviceSelected(QString) ), this, SLOT( onDeviceSelected(QString) ) );
 
+    commander_->req_SCAN();
     scan_->exec();
 
     delete scan_;
@@ -323,34 +312,26 @@ void MainWindow::onScanRequest( bool checked )
 
 void MainWindow::onDeviceSelected( QString macAddress )
 {
-    const QString connectStr = "AT+A2DPCONN=" + macAddress;
-
-    transmit( "AT+AUDROUTE=0" );
-
-    transmit( "AT+A2DPDISC" );
-    transmit( "AT+HFPDISC" );
+    commander_->disconnect();
     ui_->device_A2DP->setText( "" );
     ui_->device_HFP->setText( "" );
+    commander_->pair( macAddress.toStdString().c_str() );
 
-    transmit( connectStr.toStdString().c_str() );
-    transmit( "AT+AUDROUTE=1" );
-    QTimer::singleShot( 5000, this, SLOT( refreshPairedList() ) );
+    QTimer::singleShot( 5000, this, SLOT( refresh() ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::onChanged_A2DP_MicGain( int val )
 {
-    const QString str = "AT+MICGAIN=" + QString::number( val ) + "," + QString::number( ui_->spinBox_HFP->value() );
-    transmit( str.toStdString().c_str() );
+    commander_->set_MICGAIN(val, ui_->spinBox_HFP->value() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::onChanged_HFP_MicGain( int val )
 {
-    const QString str = "AT+MICGAIN=" + QString::number( ui_->spinBox_A2DP->value() ) + "," + QString::number( val );
-    transmit( str.toStdString().c_str() );
+    commander_->set_MICGAIN( ui_->spinBox_A2DP->value(), val );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -359,7 +340,7 @@ void MainWindow::closeEvent( QCloseEvent *event )
 {
     Q_UNUSED( event );
 
-    transmit( "AT+REBOOT" );
+    commander_->reboot();
     QThread::msleep( 1000 );
 }
 

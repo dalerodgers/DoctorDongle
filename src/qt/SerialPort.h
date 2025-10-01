@@ -1,6 +1,7 @@
 #ifndef SerialPort_H
 #define SerialPort_H
 
+#include "Commander.h"
 #include <list>
 #include <QMutex>
 #include <QObject>
@@ -9,7 +10,7 @@
 class QSerialPort;
 class Receiver;
 
-class SerialPort : public QObject
+class SerialPort : public QObject, public Commander::RequiredIf
 {
     Q_OBJECT
 
@@ -17,7 +18,7 @@ public:
     SerialPort( const QString& name, Receiver& receiver );
     ~SerialPort();
 
-    void Transmit( const char* c_str, const bool waitForOkay );
+    virtual void Transmit( const char* c_str, const bool waitForOkay ) override;
     bool IsOpen() const;
 
 private:

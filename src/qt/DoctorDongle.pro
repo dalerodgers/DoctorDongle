@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    ../common/Commander.cpp \
     ../common/Receiver.cpp \
     MessageHandler.cpp \
     PairedDeviceSelector.cpp \
@@ -19,6 +20,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    ../common/Commander.h \
     ../common/Device.h \
     ../common/Receiver.h \
     MessageHandler.h \
