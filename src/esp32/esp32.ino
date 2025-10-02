@@ -22,6 +22,8 @@ void setup()
     eric.push_back( { "Bob the dooley", "ABCDEFGH" } );
     Globals::callbacks.on_PairedList( eric );
 
+    Globals::callbacks.on_A2DP_MicGain( 0 );
+
     Callbacks::clr_Menu();
 }
 

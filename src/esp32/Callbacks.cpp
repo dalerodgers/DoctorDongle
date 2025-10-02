@@ -8,12 +8,6 @@
 
 ///////////////////////////////////////////////////////////////////////////
 
-bool Callbacks::dummyPin = false;
-
-
-
-
-
 Menu* Callbacks::menu_ = nullptr;
 unsigned long Callbacks::lastButtonPress_;
 
@@ -38,6 +32,9 @@ const Menu::FuncPtr Callbacks::Menu_Scanned_N[Menu::MAX_OPTIONS] =
 
 bool Callbacks::isConnected_A2DP = false;
 bool Callbacks::isConnected_HFP = false;
+
+int Callbacks::micGain_A2DP = -1;
+int Callbacks::micGain_HFP = -1;
 std::string Callbacks::deviceName;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -55,14 +52,6 @@ void Callbacks::loop()
     else
     {
         clr_Menu();
-    }
-
-    static unsigned long jeff = millis(); 
-
-    if( ( millis() - jeff ) > 500 )
-    {
-        jeff = millis();
-        dummyPin = ( dummyPin ? false : true );      
     }
 }
 
@@ -95,7 +84,16 @@ void Callbacks::button_UP( Button2& btn )
     if( nullptr != menu_ )
     {
         menu_->up();
-    }    
+    }
+    else
+    {
+        micGain_A2DP++;
+
+        if( micGain_A2DP > 15 )
+        {
+            micGain_A2DP = 15;
+        }
+    } 
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -108,6 +106,15 @@ void Callbacks::button_DOWN( Button2& btn )
     if( nullptr != menu_ )
     {
         menu_->down();
+    }
+    else
+    {
+        micGain_A2DP--;
+
+        if( micGain_A2DP < 0 )
+        {
+            micGain_A2DP = 0;
+        }
     }
 }
 
@@ -129,6 +136,7 @@ void Callbacks::button_LEFT( Button2& btn )
         Status::refresh();
 
         Globals::tft.fillTriangle( 225, 55, 225, 65, 235, 60, TFT_WHITE );
+        paintVolume( 219, 10 );
     }
     else
     {
@@ -155,6 +163,7 @@ void Callbacks::button_RIGHT( Button2& btn )
         Status::refresh();
 
         Globals::tft.fillTriangle( 5, 60, 15, 55, 15, 65, TFT_WHITE );
+        paintVolume( 5, 10 );  
     }
 }
 
@@ -321,6 +330,7 @@ void Callbacks::on_A2DP_Device( const std::string& name )
 
 void Callbacks::on_A2DP_MicGain( const int val )
 {
+    micGain_A2DP = val;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -349,6 +359,7 @@ void Callbacks::on_HFP_Device( const std::string& name )
 
 void Callbacks::on_HFP_MicGain( const int val )
 {
+
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -374,6 +385,16 @@ void Callbacks::on_ScanList( const std::vector<Device>& deviceList )
 namespace Globals
 {
     Callbacks callbacks;
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::paintVolume( const int32_t x, const int32_t y )
+{
+    Globals::tft.fillRect( x, y, 5, 15, TFT_WHITE );
+    Globals::tft.fillTriangle( x+1, y+7, x+10, y, x+10, y+15, TFT_WHITE );
+    Globals::tft.fillTriangle( x+16, y, x+13, y+7, x+19, y+7, TFT_WHITE );
+    Globals::tft.fillTriangle( x+16, y+15, x+13, y+9, x+19, y+9, TFT_WHITE );
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -10,10 +10,6 @@ class Button2;
 class Callbacks : public Receiver::RequiredIf
 {
 public:
-    static bool dummyPin;
-
-
-
     static void loop();
 
     static void set_Menu( Menu& menu );
@@ -56,6 +52,10 @@ public:
 
     static bool isConnected_A2DP;
     static bool isConnected_HFP;
+
+    static int micGain_A2DP;
+    static int micGain_HFP;
+
     static std::string deviceName;
     
 public://protected:
@@ -74,7 +74,9 @@ public://protected:
 
 private:
     static Menu* menu_;
-    static unsigned long lastButtonPress_;    
+    static unsigned long lastButtonPress_;
+
+    static void paintVolume( const int32_t x, const int32_t y );    
 };
 
 namespace Globals

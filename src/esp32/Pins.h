@@ -10,6 +10,8 @@ namespace Pins
 
     static constexpr uint8_t BUTTON_1 = 35;
     static constexpr uint8_t BUTTON_2 = 0;
+
+    static constexpr uint8_t BT_LED = 36;
 }
 
 #endif
