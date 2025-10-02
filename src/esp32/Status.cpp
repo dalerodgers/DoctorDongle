@@ -64,8 +64,8 @@ void Status::loop()
 
 void Status::refresh()
 {
-    Globals::tft.fillRect( 0, Globals::tft.height() - 16, Globals::tft.width(), 16, TFT_BLACK );
-    Globals::tft.fillRect( 0, Globals::tft.height() - 18, Globals::tft.width(), 2, TFT_LIGHTGREY );
+    Globals::tft.fillRect( 0, Globals::tft.height() - 18, Globals::tft.width(), 18, TFT_BLACK );
+    Globals::tft.fillRect( 0, Globals::tft.height() - 20, Globals::tft.width(), 2, TFT_LIGHTGREY );
 
     paint_LED( true );
     paint_LED( lastLedState_ );
@@ -79,11 +79,11 @@ void Status::paint_LED( const bool led )
 {
     if( led )
     {
-        Globals::tft.fillCircle( 6, Globals::tft.height() - 8, 6, TFT_BLUE );
+        Globals::tft.fillCircle( 6, Globals::tft.height() - 10, 6, TFT_BLUE );
     }
     else
     {
-        Globals::tft.fillCircle( 6, Globals::tft.height() - 8, 4, TFT_BLACK );
+        Globals::tft.fillCircle( 6, Globals::tft.height() - 10, 4, TFT_BLACK );
     }
 }
 
@@ -96,11 +96,11 @@ void Status::paint_Device()
     
     if( !Callbacks::deviceName.empty() )
     {
-        Globals::tft.drawString( Callbacks::deviceName.c_str(), 18, Globals::tft.height() - Globals::tft.fontHeight() + 1);
+        Globals::tft.drawString( Callbacks::deviceName.c_str(), 18, Globals::tft.height() - Globals::tft.fontHeight() - 1);
     }       
     else 
     {
-        Globals::tft.drawString( "No Device", 18, Globals::tft.height() - Globals::tft.fontHeight() + 1);
+        Globals::tft.drawString( "No Device", 18, Globals::tft.height() - Globals::tft.fontHeight() - 1);
     }    
 }
 
@@ -117,9 +117,25 @@ void Status::paint_ADC()
     Globals::tft.fillRect( 200, Globals::tft.height() - 16, Globals::tft.width() - 200, 16, TFT_BLACK );        
 
     Globals::tft.setTextFont( 2 );
-    Globals::tft.setTextColor( TFT_DARKGREY );
-        
-    Globals::tft.drawString( temp, 203, Globals::tft.height() - Globals::tft.fontHeight() + 1 );
+
+    if( battery_voltage > 4.0f )
+    {
+        Globals::tft.setTextColor( TFT_DARKGREY );
+    }    
+    else if( battery_voltage > 3.6f )
+    {
+        Globals::tft.setTextColor( TFT_DARKGREEN );      
+    }
+    else if( battery_voltage > 3.4f )
+    {
+        Globals::tft.setTextColor( TFT_YELLOW );
+    }
+    else
+    {
+        Globals::tft.setTextColor( TFT_RED );
+    }
+
+    Globals::tft.drawString( temp, 203, Globals::tft.height() - Globals::tft.fontHeight() - 1 );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
