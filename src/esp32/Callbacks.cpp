@@ -80,10 +80,8 @@ void Callbacks::set_Menu( Menu &menu )
 void Callbacks::clr_Menu()
 {
     menu_ = nullptr;
-    //Globals::tft.fillScreen( TFT_DARKGREY );
     
-    //Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );
-    Globals::tft.pushImage( 0, 0, Headset_WIDTH, Headset_HEIGHT, Headset );    
+    Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );    
     Status::refresh();
 }
 
@@ -110,6 +108,49 @@ void Callbacks::button_DOWN( Button2& btn )
     if( nullptr != menu_ )
     {
         menu_->down();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::button_LEFT( Button2& btn )
+{
+    static_cast<void>( btn );
+    //lastButtonPress_ = millis();
+
+    //if( nullptr != menu_ )
+    //{
+    //    menu_->down();
+    //}
+
+    if( nullptr == menu_ )
+    {    
+        Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );    
+        Status::refresh();
+    }
+    else
+    {
+        lastButtonPress_ = millis();
+        menu_->back();
+    }    
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::button_RIGHT( Button2& btn )
+{
+    static_cast<void>( btn );
+    //lastButtonPress_ = millis();
+
+    //if( nullptr != menu_ )
+    //{
+    //    menu_->down();
+    //}
+
+    if( nullptr == menu_ )
+    {
+        Globals::tft.pushImage( 0, 0, Headset_WIDTH, Headset_HEIGHT, Headset );    
+        Status::refresh();
     }
 }
 

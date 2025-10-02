@@ -3,11 +3,9 @@
 #include <esp_adc_cal.h>
 #include "Callbacks.h"
 #include "Globals.h"
+#include "Pins.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-
-#define ADC_EN              14  //ADC_EN is the ADC detection enable port
-#define ADC_PIN             34
 
 bool Status::lastLedState_;
 unsigned long Status::lastBatteryTime_;
@@ -37,8 +35,8 @@ void Status::initialise()
         Serial.println("Default Vref: 1100mV");
     }
 
-    pinMode( ADC_EN, OUTPUT );
-    digitalWrite( ADC_EN, HIGH );
+    pinMode( Pins::ADC_EN, OUTPUT );
+    digitalWrite( Pins::ADC_EN, HIGH );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -108,7 +106,7 @@ void Status::paint_Device()
 
 void Status::paint_ADC()
 {
-    const uint16_t v = analogRead(ADC_PIN);
+    const uint16_t v = analogRead( Pins::ADC_PIN );
     const float battery_voltage = ((float)v / 4095.0) * 2.0 * 3.3 * (vref_ / 1000.0);
     
     char temp[20];

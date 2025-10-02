@@ -21,6 +21,8 @@ public:
 
     static void button_UP( Button2& btn );
     static void button_DOWN( Button2& btn );
+    static void button_LEFT( Button2& btn );
+    static void button_RIGHT( Button2& btn );
     static void button_ENTER( Button2& btn );
 
     static void Menu_Main__PreviousConnections();
