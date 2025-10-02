@@ -127,6 +127,8 @@ void Callbacks::button_LEFT( Button2& btn )
     {    
         Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );    
         Status::refresh();
+
+        Globals::tft.fillTriangle( 225, 55, 225, 65, 235, 60, TFT_WHITE );
     }
     else
     {
@@ -151,6 +153,8 @@ void Callbacks::button_RIGHT( Button2& btn )
     {
         Globals::tft.pushImage( 0, 0, Headset_WIDTH, Headset_HEIGHT, Headset );    
         Status::refresh();
+
+        Globals::tft.fillTriangle( 5, 60, 15, 55, 15, 65, TFT_WHITE );
     }
 }
 
