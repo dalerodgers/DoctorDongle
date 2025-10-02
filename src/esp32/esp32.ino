@@ -24,6 +24,8 @@ void setup()
 
     Globals::callbacks.on_A2DP_MicGain( 0 );
 
+    Globals::serialComms.initialise();
+
     Callbacks::clr_Menu();
 }
 
@@ -34,6 +36,7 @@ void loop()
     Joypad::loop();
     Callbacks::loop();
     Status::loop();
+    Globals::serialComms.loop();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

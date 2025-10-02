@@ -2,8 +2,8 @@
 #define Callbacks_H
 
 #include "Menu.h"
-#include "common/Device.h"
-#include "common/Receiver.h"
+#include "src/common/Device.h"
+#include "src/common/Receiver.h"
 
 class Button2;
 

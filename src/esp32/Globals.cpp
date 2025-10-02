@@ -1,5 +1,7 @@
 #include "Globals.h"
 
+#include "Callbacks.h"
+
 namespace Globals
 {
     TFT_eSPI tft( 135, 240 );
@@ -9,4 +11,7 @@ namespace Globals
     Menu_PreviousConnections menu_PreviousConnections( tft );
     Menu_Scanned menu_Scanned( tft );
     Menu_Delete menu_Delete( tft );
+
+    Receiver receiver( callbacks );
+    SerialComms serialComms( receiver );
 }
