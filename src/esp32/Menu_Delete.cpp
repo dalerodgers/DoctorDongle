@@ -1,0 +1,22 @@
+#include "Menu_Delete.h"
+
+#include "Callbacks.h"
+
+///////////////////////////////////////////////////////////////////////////////
+
+Menu_Delete::Menu_Delete( TFT_eSPI& tft ) :
+    Menu( tft )
+{
+    setTitle( "Delete all connections?" );
+    setOption( 0, "Delete", &Callbacks::Menu_Delete__Delete );
+    setBack( &Callbacks::Menu_Delete__BACK );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Menu_Delete::Start()
+{
+    Menu::Start();
+}
+
+///////////////////////////////////////////////////////////////////////////////
