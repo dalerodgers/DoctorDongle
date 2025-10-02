@@ -1,6 +1,7 @@
 #ifndef SerialComms_H
 #define SerialComms_H
 
+#include <string>
 #include "src/common/Receiver.h"
 
 class SerialComms
@@ -13,6 +14,7 @@ public:
 
 private:
     Receiver& receiver_;
+    std::string buffer_;
 };
 
 #endif
