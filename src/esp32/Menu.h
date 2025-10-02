@@ -23,6 +23,7 @@ public:
     void up();
     void down();
     void enter();
+    void back();
 
 private:
     static constexpr int32_t OPT_TEXT_X_OFFSET = 12;
@@ -46,6 +47,7 @@ private:
     int32_t highlighted_;
 
     void redrawSelected( const int32_t old );
+    void paintPush( const int32_t option );
 };
 
 #endif

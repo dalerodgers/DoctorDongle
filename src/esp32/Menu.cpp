@@ -131,28 +131,28 @@ void Menu::down()
 
 void Menu::enter()
 {
-    tft_.fillRoundRect( OPT_BOX_X_OFFSET, OPT_BOX_Y_OFFSET + ( ( highlighted_ * tft_.fontHeight() ) + OPT_TEXT_LINE_SPACE ), tft_.width() - OPT_BOX_X_OFFSET, tft_.fontHeight() + 3, 4, TFT_DARKGREY );
-    tft_.setTextColor( TFT_BLACK );
-
     if( highlighted_ < MAX_OPTIONS )
     {    
         if( nullptr != options_[highlighted_].pFunc )
         {
-            tft_.drawString( options_[highlighted_].text, OPT_TEXT_X_OFFSET, OPT_TEXT_Y_OFFSET + ( (highlighted_ * tft_.fontHeight() ) + OPT_TEXT_LINE_SPACE ) );
-            delay( 100 );
-
+            paintPush( highlighted_ );
             options_[highlighted_].pFunc();
         }
     }
     else
     {
-        if( nullptr != pFunc_Back_ )
-        {
-            tft_.drawString( "BACK", OPT_TEXT_X_OFFSET, OPT_TEXT_Y_OFFSET + ( (highlighted_ * tft_.fontHeight() ) + OPT_TEXT_LINE_SPACE ) );
-            delay( 100 );
-          
-            pFunc_Back_();
-        }
+        back();
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Menu::back()
+{
+    if( nullptr != pFunc_Back_ )
+    { 
+        paintPush( MAX_OPTIONS );
+        pFunc_Back_();
     }
 }
 
@@ -169,3 +169,15 @@ void Menu::redrawSelected( const int32_t old )
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void Menu::paintPush( const int32_t option )
+{
+    const char* const text = ( option < MAX_OPTIONS ? options_[highlighted_].text : "BACK" );
+    
+    tft_.fillRoundRect( OPT_BOX_X_OFFSET, OPT_BOX_Y_OFFSET + ( ( option * tft_.fontHeight() ) + OPT_TEXT_LINE_SPACE ), tft_.width() - OPT_BOX_X_OFFSET, tft_.fontHeight() + 3, 4, TFT_DARKGREY );
+    tft_.setTextColor( TFT_BLACK );
+  
+    tft_.drawString( text, OPT_TEXT_X_OFFSET, OPT_TEXT_Y_OFFSET + ( (option * tft_.fontHeight() ) + OPT_TEXT_LINE_SPACE ) );
+
+    delay( 500 );
+}

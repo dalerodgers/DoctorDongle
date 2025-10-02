@@ -3,21 +3,22 @@
 #include <esp_adc_cal.h>
 #include "Callbacks.h"
 #include "Globals.h"
+#include "Pins.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-
-#define ADC_EN              14  //ADC_EN is the ADC detection enable port
-#define ADC_PIN             34
 
 bool Status::lastLedState_;
 unsigned long Status::lastBatteryTime_;
 int Status::vref_ = 1100;
+int Status::lastVolume_ = -1;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void Status::initialise()
 {
-    lastLedState_ = Callbacks::dummyPin;
+    pinMode( Pins::BT_LED, INPUT );
+  
+    lastLedState_ = digitalRead( Pins::BT_LED );
     lastBatteryTime_ = millis();
 
     esp_adc_cal_characteristics_t adc_chars;
@@ -37,15 +38,15 @@ void Status::initialise()
         Serial.println("Default Vref: 1100mV");
     }
 
-    pinMode( ADC_EN, OUTPUT );
-    digitalWrite( ADC_EN, HIGH );
+    pinMode( Pins::ADC_EN, OUTPUT );
+    digitalWrite( Pins::ADC_EN, HIGH );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void Status::loop()
 {
-    const bool ledState = Callbacks::dummyPin;
+    const bool ledState = digitalRead( Pins::BT_LED );
 
     if( ledState != lastLedState_ )
     {
@@ -58,6 +59,8 @@ void Status::loop()
         lastBatteryTime_ = millis();
         paint_ADC();      
     }
+
+    paint_Volume( Callbacks::micGain_A2DP );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,6 +74,7 @@ void Status::refresh()
     paint_LED( lastLedState_ );
     paint_Device();
     paint_ADC();
+    paint_Volume( -1 );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -108,7 +112,7 @@ void Status::paint_Device()
 
 void Status::paint_ADC()
 {
-    const uint16_t v = analogRead(ADC_PIN);
+    const uint16_t v = analogRead( Pins::ADC_PIN );
     const float battery_voltage = ((float)v / 4095.0) * 2.0 * 3.3 * (vref_ / 1000.0);
     
     char temp[20];
@@ -136,6 +140,39 @@ void Status::paint_ADC()
     }
 
     Globals::tft.drawString( temp, 203, Globals::tft.height() - Globals::tft.fontHeight() - 1 );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Status::paint_Volume( const int newVolume )
+{
+    if( lastVolume_ != newVolume )
+    {
+        lastVolume_ = newVolume;
+
+        Globals::tft.fillRect( 155, Globals::tft.height() - 16, 44, 16, TFT_BLACK );
+
+        if( newVolume < 0 )
+        {
+            ;   // do nothing
+        }
+        else
+        {
+            char temp[20];
+            sprintf( temp, "VOL:%d", newVolume );
+
+            if( newVolume > 0 )
+            {
+                Globals::tft.setTextColor( TFT_DARKGREY );
+            }    
+            else
+            {
+                Globals::tft.setTextColor( TFT_RED );      
+            }       
+
+            Globals::tft.drawString( temp, 155, Globals::tft.height() - Globals::tft.fontHeight() - 1 );                        
+        }        
+    }    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
