@@ -3,6 +3,9 @@
 #include "Globals.h"
 #include "Status.h"
 
+#include "images/Note.h"
+#include "images/Headset.h"
+
 ///////////////////////////////////////////////////////////////////////////
 
 bool Callbacks::dummyPin = false;
@@ -77,7 +80,10 @@ void Callbacks::set_Menu( Menu &menu )
 void Callbacks::clr_Menu()
 {
     menu_ = nullptr;
-    Globals::tft.fillScreen( TFT_DARKGREY );
+    //Globals::tft.fillScreen( TFT_DARKGREY );
+    
+    //Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );
+    Globals::tft.pushImage( 0, 0, Headset_WIDTH, Headset_HEIGHT, Headset );    
     Status::refresh();
 }
 

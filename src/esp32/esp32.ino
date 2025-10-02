@@ -25,20 +25,20 @@ int vref = 1100;
 //static Menu mainMenu( tft );
 ///static Menu_Main menu_Main( tft );
 
-void showVoltage()
-{
-    static uint64_t timeStamp = 0;
-    if (millis() - timeStamp > 1000) {
-        timeStamp = millis();
-        uint16_t v = analogRead(ADC_PIN);
-        float battery_voltage = ((float)v / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
-        String voltage = "Voltage :" + String(battery_voltage) + "V";
-        Serial.println(voltage);
-        //tft.fillScreen(TFT_BLACK);
-        //tft.setTextDatum(MC_DATUM);
-        //tft.drawString(voltage,  tft.width() / 2, tft.height() / 2 );
-    }
-}
+//void showVoltage()
+//{
+//    static uint64_t timeStamp = 0;
+//    if (millis() - timeStamp > 1000) {
+//        timeStamp = millis();
+//        uint16_t v = analogRead(ADC_PIN);
+//        float battery_voltage = ((float)v / 4095.0) * 2.0 * 3.3 * (vref / 1000.0);
+//        String voltage = "Voltage :" + String(battery_voltage) + "V";
+//        Serial.println(voltage);
+//        //tft.fillScreen(TFT_BLACK);
+//        //tft.setTextDatum(MC_DATUM);
+//        //tft.drawString(voltage,  tft.width() / 2, tft.height() / 2 );
+//    }
+//}
 
 void setup()
 {
