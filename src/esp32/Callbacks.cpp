@@ -35,7 +35,10 @@ bool Callbacks::isConnected_HFP = false;
 
 int Callbacks::micGain_A2DP = -1;
 int Callbacks::micGain_HFP = -1;
+int Callbacks::audRoute = -1;
 std::string Callbacks::deviceName;
+
+bool Callbacks::isOkay = false;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -132,6 +135,8 @@ void Callbacks::button_LEFT( Button2& btn )
 
     if( nullptr == menu_ )
     {    
+        Globals::commander.set_AUDROUTE__A2DP();
+
         Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );    
         Status::refresh();
 
@@ -159,6 +164,8 @@ void Callbacks::button_RIGHT( Button2& btn )
 
     if( nullptr == menu_ )
     {
+        Globals::commander.set_AUDROUTE__HFP();
+
         Globals::tft.pushImage( 0, 0, Headset_WIDTH, Headset_HEIGHT, Headset );    
         Status::refresh();
 
@@ -195,6 +202,7 @@ void Callbacks::Menu_Main__PreviousConnections()
 
 void Callbacks::Menu_Main__ScanForNew()
 {
+    Globals::commander.req_SCAN();
     set_Menu( Globals::menu_Scanning );
 }
 
@@ -223,28 +231,32 @@ void Callbacks::Menu_Scanning__BACK()
 
 void Callbacks::Menu_PreviousConnections_0()
 {
-    Globals::callbacks.on_A2DP_Device( pairedList.at(0).name() );
+    Globals::commander.pair( pairedList.at( 0 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
  
 void Callbacks::Menu_PreviousConnections_1()
 {
-    Globals::callbacks.on_A2DP_Device( pairedList.at(1).name() );
+    Globals::commander.pair( pairedList.at( 1 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 void Callbacks::Menu_PreviousConnections_2()
 {
-    Globals::callbacks.on_A2DP_Device( pairedList.at(2).name() );
+    Globals::commander.pair( pairedList.at( 2 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 void Callbacks::Menu_PreviousConnections_3()
 {
-    Globals::callbacks.on_A2DP_Device( pairedList.at(3).name() );
+    Globals::commander.pair( pairedList.at( 3 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -258,24 +270,32 @@ void Callbacks::Menu_PreviousConnections_BACK()
 
 void Callbacks::Menu_Scanned_0()
 {
+    Globals::commander.pair( scanList.at( 0 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
  
 void Callbacks::Menu_Scanned_1()
 {
+    Globals::commander.pair( scanList.at( 1 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 void Callbacks::Menu_Scanned_2()
 {
+    Globals::commander.pair( scanList.at( 2 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 void Callbacks::Menu_Scanned_3()
 {
+    Globals::commander.pair( scanList.at( 3 ).macAddress().c_str() );
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -289,6 +309,10 @@ void Callbacks::Menu_Scanned_BACK()
 
 void Callbacks::Menu_Delete__Delete()
 {
+    Globals::commander.clr_PLIST();
+    Globals::commander.req_PLIST();
+    deviceName.clear();
+
     set_Menu( Globals::menu_Main );
 }
 
@@ -303,6 +327,14 @@ void Callbacks::Menu_Delete__BACK()
 
 void Callbacks::on_OK()
 {
+    if( false == isOkay )
+    {
+        // just connected to module, setup its defaults ...................
+        Globals::commander.defaults();
+        set_Menu( Globals::menu_Main );
+    }
+
+    isOkay = true;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -335,8 +367,9 @@ void Callbacks::on_A2DP_MicGain( const int val )
 
 ///////////////////////////////////////////////////////////////////////////
 
-void Callbacks::on_AUDROUTE( const std::string& val )
+void Callbacks::on_AUDROUTE( const int val )
 {
+    audRoute = val;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -344,7 +377,6 @@ void Callbacks::on_AUDROUTE( const std::string& val )
 void Callbacks::on_HFP_Connected( const bool isConnected )
 {
     isConnected_HFP = isConnected;
-    Status::refresh();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -359,7 +391,6 @@ void Callbacks::on_HFP_Device( const std::string& name )
 
 void Callbacks::on_HFP_MicGain( const int val )
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////////

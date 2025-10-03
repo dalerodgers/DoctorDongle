@@ -55,8 +55,11 @@ public:
 
     static int micGain_A2DP;
     static int micGain_HFP;
+    static int audRoute;
 
     static std::string deviceName;
+
+    static bool isOkay;
     
 public://protected:
     virtual void on_OK() override;
@@ -65,7 +68,7 @@ public://protected:
     virtual void on_A2DP_Connected( const bool isConnected ) override;
     virtual void on_A2DP_Device( const std::string& deviceName ) override;
     virtual void on_A2DP_MicGain( const int val ) override;
-    virtual void on_AUDROUTE( const std::string& val ) override;
+    virtual void on_AUDROUTE( const int val ) override;
     virtual void on_HFP_Connected( const bool isConnected ) override;
     virtual void on_HFP_Device( const std::string& deviceName ) override;
     virtual void on_HFP_MicGain( const int val ) override;

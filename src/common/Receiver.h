@@ -17,7 +17,7 @@ public:
         virtual void on_A2DP_Connected( const bool isConnected ) = 0;
         virtual void on_A2DP_Device( const std::string& deviceName ) = 0;
         virtual void on_A2DP_MicGain( const int val ) = 0;
-        virtual void on_AUDROUTE( const std::string& val ) = 0;
+        virtual void on_AUDROUTE( const int val ) = 0;
         virtual void on_HFP_Connected( const bool isConnected ) = 0;
         virtual void on_HFP_Device( const std::string& deviceName ) = 0;
         virtual void on_HFP_MicGain( const int val ) = 0;
@@ -46,6 +46,7 @@ private:
     void parse_HFPDEV( const std::string& val );
     void parse_HFPSTAT( const std::string& val );
     void parse_MICGAIN( const std::string& val );
+    void parse_AUDROUTE( const std::string& val );
     void parse_PLIST( const std::string& val );
     void parse_SCAN( const std::string& val );
 };
