@@ -2,6 +2,7 @@
 #define Globals_H
 
 #include "TFT_eSPI.h"
+#include "src/common/Commander.h"
 #include "src/menus/Menu_Main.h"
 #include "src/menus/Menu_Scanning.h"
 #include "src/menus/Menu_PreviousConnections.h"
@@ -21,6 +22,7 @@ namespace Globals
 
     extern Receiver receiver;
     extern SerialComms serialComms;
+    extern Commander commander;
 }
 
 #endif

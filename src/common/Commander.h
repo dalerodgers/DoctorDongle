@@ -32,6 +32,7 @@ public:
     void set_AUDROUTE__A2DP();
     void set_AUDROUTE__HFP();
     void req_SCAN();
+    void get_VER();
 
 private:
     RequiredIf* requiredIf_;

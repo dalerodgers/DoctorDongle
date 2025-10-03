@@ -158,6 +158,8 @@ void Status::paint_Volume( const int newVolume )
         }
         else
         {
+            Globals::tft.setTextFont( 2 );
+
             char temp[20];
             sprintf( temp, "VOL:%d", newVolume );
 

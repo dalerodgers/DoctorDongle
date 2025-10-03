@@ -14,4 +14,5 @@ namespace Globals
 
     Receiver receiver( callbacks );
     SerialComms serialComms( receiver );
+    Commander commander;
 }
