@@ -154,12 +154,6 @@ void Callbacks::button_DOWN( Button2& btn )
 void Callbacks::button_LEFT( Button2& btn )
 {
     static_cast<void>( btn );
-    //lastButtonPress_ = millis();
-
-    //if( nullptr != menu_ )
-    //{
-    //    menu_->down();
-    //}
 
     if( nullptr == menu_ )
     {    
@@ -177,12 +171,6 @@ void Callbacks::button_LEFT( Button2& btn )
 void Callbacks::button_RIGHT( Button2& btn )
 {
     static_cast<void>( btn );
-    //lastButtonPress_ = millis();
-
-    //if( nullptr != menu_ )
-    //{
-    //    menu_->down();
-    //}
 
     if( nullptr == menu_ )
     {
