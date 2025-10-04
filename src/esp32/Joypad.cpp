@@ -2,6 +2,7 @@
 
 #include "Callbacks.h"
 #include "Pins.h"
+#include "Settings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -29,10 +30,7 @@ void Joypad::initialise()
     button_DOWN.setDoubleClickHandler( &Callbacks::button_ENTER );
     button_DOWN.setTripleClickHandler( &Callbacks::button_RIGHT );    
 #else
-    button_A.setTapHandler( &Callbacks::button_UP );
-    button_B.setTapHandler( &Callbacks::button_LEFT );
-    button_C.setTapHandler( &Callbacks::button_DOWN );
-    button_D.setTapHandler( &Callbacks::button_RIGHT );
+    onFlipChange();
     button_E.setTapHandler( &Callbacks::button_ENTER );
 #endif
 }
@@ -50,6 +48,28 @@ void Joypad::loop()
     button_C.loop();
     button_D.loop();
     button_E.loop();
+#endif
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Joypad::onFlipChange()
+{
+#ifdef USE_JOYPAD
+    if( !Settings::flipped() )
+    {
+        button_A.setTapHandler( &Callbacks::button_UP );
+        button_B.setTapHandler( &Callbacks::button_LEFT );
+        button_C.setTapHandler( &Callbacks::button_DOWN );
+        button_D.setTapHandler( &Callbacks::button_RIGHT );
+    }
+    else
+    {
+        button_A.setTapHandler( &Callbacks::button_DOWN );
+        button_B.setTapHandler( &Callbacks::button_RIGHT );
+        button_C.setTapHandler( &Callbacks::button_UP );
+        button_D.setTapHandler( &Callbacks::button_LEFT );
+    }
 #endif
 }
 

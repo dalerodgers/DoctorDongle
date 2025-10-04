@@ -11,6 +11,8 @@ public:
     static void initialise();
     static void loop();
 
+    static void onFlipChange();
+
 private:
 #ifndef USE_JOYPAD
     static Button2 button_UP;

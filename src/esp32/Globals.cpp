@@ -11,6 +11,7 @@ namespace Globals
     Menu_PreviousConnections menu_PreviousConnections( tft );
     Menu_Scanned menu_Scanned( tft );
     Menu_Delete menu_Delete( tft );
+    Menu_Flip menu_Flip( tft );
 
     Receiver receiver( callbacks );
     SerialComms serialComms( receiver );

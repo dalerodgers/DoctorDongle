@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "Status.h"
+#include "Settings.h"
 
 #include "images/Note.h"
 #include "images/Headset.h"
@@ -220,6 +221,13 @@ void Callbacks::Menu_Main__DeleteAll()
 
 ///////////////////////////////////////////////////////////////////////////
 
+void Callbacks::Menu_Main__Flip()
+{
+    set_Menu( Globals::menu_Flip );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 void Callbacks::Menu_Main__BACK()
 {
     clr_Menu();
@@ -330,6 +338,31 @@ void Callbacks::Menu_Delete__Delete()
 ///////////////////////////////////////////////////////////////////////////
 
 void Callbacks::Menu_Delete__BACK()
+{
+    set_Menu( Globals::menu_Main );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::Menu_Flip__Flip()
+{
+    Settings::flipOn();
+    Settings::save();
+    set_Menu( Globals::menu_Main );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::Menu_Flip__DoNotFlip()
+{
+    Settings::flipOff();
+    Settings::save();
+    set_Menu( Globals::menu_Main );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::Menu_Flip__BACK()
 {
     set_Menu( Globals::menu_Main );
 }
