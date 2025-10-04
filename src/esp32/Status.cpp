@@ -10,7 +10,6 @@
 bool Status::lastLedState_;
 unsigned long Status::lastBatteryTime_;
 int Status::vref_ = 1100;
-int Status::lastVolume_ = -1;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -59,8 +58,6 @@ void Status::loop()
         lastBatteryTime_ = millis();
         paint_ADC();      
     }
-
-    paint_Volume( Callbacks::micGain_A2DP );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -74,7 +71,7 @@ void Status::refresh()
     paint_LED( lastLedState_ );
     paint_Device();
     paint_ADC();
-    paint_Volume( -1 );
+    paint_Volume();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,15 +94,23 @@ void Status::paint_Device()
 {
     Globals::tft.setTextFont( 2 );
     Globals::tft.setTextColor( TFT_DARKGREY );
-    
-    if( !Callbacks::deviceName.empty() )
+
+    const char* p;    
+
+    if( Callbacks::isConnected_A2DP )
     {
-        Globals::tft.drawString( Callbacks::deviceName.c_str(), 18, Globals::tft.height() - Globals::tft.fontHeight() - 1);
-    }       
-    else 
+        p = Callbacks::deviceName_A2DP.c_str();
+    }
+    else if( Callbacks::isConnected_HFP )
     {
-        Globals::tft.drawString( "No Device", 18, Globals::tft.height() - Globals::tft.fontHeight() - 1);
-    }    
+        p = Callbacks::deviceName_HFP.c_str();
+    }
+    else
+    {
+        p = "No device";
+    }
+
+    Globals::tft.drawString( p, 18, Globals::tft.height() - Globals::tft.fontHeight() - 1);    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -144,37 +149,41 @@ void Status::paint_ADC()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Status::paint_Volume( const int newVolume )
+void Status::paint_Volume()
 {
-    if( lastVolume_ != newVolume )
+    int vol = -1;
+
+    if( 1 == Callbacks::audMode )
     {
-        lastVolume_ = newVolume;
+        vol = Callbacks::micGain_A2DP;
+    }
+    else if( 2 == Callbacks::audMode )
+    {
+        vol = Callbacks::micGain_HFP;
+    }      
+    else
+    {
+        ; // do nothing
+    }
 
-        Globals::tft.fillRect( 155, Globals::tft.height() - 16, 44, 16, TFT_BLACK );
+    if( -1 < vol )
+    {
+        Globals::tft.setTextFont( 2 );
 
-        if( newVolume < 0 )
+        char temp[20];
+        sprintf( temp, "VOL:%d", vol );
+
+        if( 0 < vol )
         {
-            ;   // do nothing
-        }
+            Globals::tft.setTextColor( TFT_DARKGREY );
+        }    
         else
         {
-            Globals::tft.setTextFont( 2 );
+            Globals::tft.setTextColor( TFT_RED );      
+        }       
 
-            char temp[20];
-            sprintf( temp, "VOL:%d", newVolume );
-
-            if( newVolume > 0 )
-            {
-                Globals::tft.setTextColor( TFT_DARKGREY );
-            }    
-            else
-            {
-                Globals::tft.setTextColor( TFT_RED );      
-            }       
-
-            Globals::tft.drawString( temp, 155, Globals::tft.height() - Globals::tft.fontHeight() - 1 );                        
-        }        
-    }    
+        Globals::tft.drawString( temp, 155, Globals::tft.height() - Globals::tft.fontHeight() - 1 );                        
+    }     
 }
 
 ///////////////////////////////////////////////////////////////////////////////

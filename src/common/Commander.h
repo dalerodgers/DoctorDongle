@@ -31,6 +31,7 @@ public:
     void req_PLIST();
     void set_AUDROUTE__A2DP();
     void set_AUDROUTE__HFP();
+    void set_AUDROUTE__None();
     void req_SCAN();
     void get_VER();
 

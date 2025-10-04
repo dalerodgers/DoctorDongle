@@ -13,12 +13,11 @@ private:
     static bool lastLedState_;
     static unsigned long lastBatteryTime_;
     static int vref_;
-    static int lastVolume_;
 
     static void paint_LED( const bool led );
     static void paint_Device();
     static void paint_ADC();
-    static void paint_Volume( const int newVolume );
+    static void paint_Volume();
 };
 
 #endif

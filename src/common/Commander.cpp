@@ -32,7 +32,7 @@ void Commander::defaults()
     get_HFPSTAT();
     get_MICGAIN();
     set_SPKVOL();
-    set_AUDROUTE__A2DP();
+    set_AUDROUTE__None();
     req_PLIST();
 }
 
@@ -177,6 +177,16 @@ void Commander::set_AUDROUTE__HFP()
     if( nullptr != requiredIf_ )
     {
         requiredIf_->Transmit( "AT+AUDROUTE=2" );
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Commander::set_AUDROUTE__None()
+{
+    if( nullptr != requiredIf_ )
+    {
+        requiredIf_->Transmit( "AT+AUDROUTE=0" );
     }
 }
 
