@@ -31,7 +31,7 @@ protected:
     virtual void on_A2DP_Connected( const bool isConnected ) override;
     virtual void on_A2DP_Device( const std::string& deviceName ) override;
     virtual void on_A2DP_MicGain( const int val ) override;
-    virtual void on_AUDROUTE( const std::string& val ) override;
+    virtual void on_AUDROUTE( const int val ) override;
     virtual void on_HFP_Connected( const bool isConnected ) override;
     virtual void on_HFP_Device( const std::string& deviceName ) override;
     virtual void on_HFP_MicGain( const int val ) override;

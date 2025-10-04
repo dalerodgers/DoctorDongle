@@ -1,9 +1,9 @@
 #ifndef Callbacks_H
 #define Callbacks_H
 
-#include "Menu.h"
-#include "common/Device.h"
-#include "common/Receiver.h"
+#include "src/menus/Menu.h"
+#include "src/common/Device.h"
+#include "src/common/Receiver.h"
 
 class Button2;
 
@@ -55,17 +55,22 @@ public:
 
     static int micGain_A2DP;
     static int micGain_HFP;
+    static int audMode;
 
-    static std::string deviceName;
+    static std::string deviceName_A2DP;
+    static std::string deviceName_HFP;
+
+    static bool isOkay;
     
-public://protected:
+protected:
     virtual void on_OK() override;
     virtual void on_ERR() override;
 
     virtual void on_A2DP_Connected( const bool isConnected ) override;
     virtual void on_A2DP_Device( const std::string& deviceName ) override;
     virtual void on_A2DP_MicGain( const int val ) override;
-    virtual void on_AUDROUTE( const std::string& val ) override;
+    virtual void on_AUDMODE( const int val ) override;
+    virtual void on_AUDROUTE( const int val ) override;
     virtual void on_HFP_Connected( const bool isConnected ) override;
     virtual void on_HFP_Device( const std::string& deviceName ) override;
     virtual void on_HFP_MicGain( const int val ) override;
@@ -76,7 +81,10 @@ private:
     static Menu* menu_;
     static unsigned long lastButtonPress_;
 
-    static void paintVolume( const int32_t x, const int32_t y );    
+    static void paintVolume( const int32_t x, const int32_t y );
+    static void volumeUp( int& vol );
+    static void volumeDown( int& vol );    
+    static void volumeSend();   
 };
 
 namespace Globals

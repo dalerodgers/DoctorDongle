@@ -1,5 +1,6 @@
 #include "Callbacks.h" 
 #include "Globals.h"
+#include "Module.h"
 #include "Status.h"
 #include "Joypad.h"
 
@@ -14,26 +15,32 @@ void setup()
 
     Globals::tft.init();
     Globals::tft.setRotation(1);
+    Globals::tft.fillScreen( TFT_BLACK );
 
     Joypad::initialise();
 
-    std::vector<Device> eric;
-    eric.push_back( { "Sea of Tranquility", "12345678" } );
-    eric.push_back( { "Bob the dooley", "ABCDEFGH" } );
-    Globals::callbacks.on_PairedList( eric );
+    Globals::serialComms.initialise();
+    Globals::commander.set_RequiredIf( Globals::serialComms );
 
-    Globals::callbacks.on_A2DP_MicGain( 0 );
-
-    Callbacks::clr_Menu();
+    Module::initialise();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 void loop()
 {
-    Joypad::loop();
-    Callbacks::loop();
-    Status::loop();
+    if( Callbacks::isOkay )
+    {
+        Joypad::loop();
+        Callbacks::loop();
+        Status::loop();
+    }
+    else
+    {
+        Module::loop();
+    }
+
+    Globals::serialComms.loop();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -2,11 +2,13 @@
 #define Globals_H
 
 #include "TFT_eSPI.h"
-#include "Menu_Main.h"
-#include "Menu_Scanning.h"
-#include "Menu_PreviousConnections.h"
-#include "Menu_Scanned.h"
-#include "Menu_Delete.h"
+#include "src/common/Commander.h"
+#include "src/menus/Menu_Main.h"
+#include "src/menus/Menu_Scanning.h"
+#include "src/menus/Menu_PreviousConnections.h"
+#include "src/menus/Menu_Scanned.h"
+#include "src/menus/Menu_Delete.h"
+#include "SerialComms.h"
 
 namespace Globals
 {
@@ -17,6 +19,10 @@ namespace Globals
     extern Menu_PreviousConnections menu_PreviousConnections;
     extern Menu_Scanned menu_Scanned;
     extern Menu_Delete menu_Delete;
+
+    extern Receiver receiver;
+    extern SerialComms serialComms;
+    extern Commander commander;
 }
 
 #endif

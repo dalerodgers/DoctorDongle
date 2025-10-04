@@ -182,18 +182,18 @@ void MainWindow::on_A2DP_MicGain( const int val )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::on_AUDROUTE( const std::string& val )
+void MainWindow::on_AUDROUTE( const int val )
 {
-    qDebug( "    +AUDROUTE=%s", val.c_str() );
+    qDebug( "    +AUDROUTE=%d", val );
 
-    if( val == "1" )
+    if( val == 1 )
     {
         ui_->slider_Quality->setSliderPosition( 0 );
 
         ui_->spinBox_A2DP->setEnabled( true );
         ui_->spinBox_HFP->setEnabled( false );
     }
-    else if( val == "2" )
+    else if( val == 2 )
     {
         ui_->slider_Quality->setSliderPosition( 1 );
 

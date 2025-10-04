@@ -46,9 +46,13 @@ void Receiver::OnReponse( const std::string& str )
             {
                 parse_A2DPSTAT( list.at(1) );
             }
+            else if( list.at(0).compare("+AUDMODE") == 0 )
+            {
+                parse_AUDMODE( list.at(1) );
+            }
             else if( list.at(0).compare("+AUDROUTE") == 0 )
             {
-                requiredIf_.on_AUDROUTE( list.at(1) );
+                parse_AUDROUTE( list.at(1) );
             }
             else if( list.at(0).compare("+HFPDEV") == 0 )
             {
@@ -187,6 +191,22 @@ void Receiver::parse_MICGAIN( const std::string& val )
         requiredIf_.on_A2DP_MicGain( atoi( vals.at(0).c_str() ) );
         requiredIf_.on_HFP_MicGain( atoi( vals.at(1).c_str() ) );
     }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Receiver::parse_AUDMODE( const std::string& val )
+{
+    const int numeric = std::stoi( val );
+    requiredIf_.on_AUDMODE( numeric );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Receiver::parse_AUDROUTE( const std::string& val )
+{
+    const int numeric = std::stoi( val );
+    requiredIf_.on_AUDROUTE( numeric );
 }
 
 ///////////////////////////////////////////////////////////////////////////////

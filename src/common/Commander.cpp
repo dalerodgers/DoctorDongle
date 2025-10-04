@@ -32,7 +32,7 @@ void Commander::defaults()
     get_HFPSTAT();
     get_MICGAIN();
     set_SPKVOL();
-    set_AUDROUTE__A2DP();
+    set_AUDROUTE__None();
     req_PLIST();
 }
 
@@ -182,11 +182,31 @@ void Commander::set_AUDROUTE__HFP()
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void Commander::set_AUDROUTE__None()
+{
+    if( nullptr != requiredIf_ )
+    {
+        requiredIf_->Transmit( "AT+AUDROUTE=0" );
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void Commander::req_SCAN()
 {
     if( nullptr != requiredIf_ )
     {
         requiredIf_->Transmit( "AT+SCAN=1", false );
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void Commander::get_VER()
+{
+    if( nullptr != requiredIf_ )
+    {
+        requiredIf_->Transmit( "AT+VER" );
     }
 }
 
