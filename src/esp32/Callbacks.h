@@ -24,6 +24,7 @@ public:
     static void Menu_Main__PreviousConnections();
     static void Menu_Main__ScanForNew();
     static void Menu_Main__DeleteAll();
+    static void Menu_Main__Flip();
     static void Menu_Main__BACK();
 
     static void Menu_Scanning__BACK();
@@ -46,6 +47,10 @@ public:
 
     static void Menu_Delete__Delete();
     static void Menu_Delete__BACK();    
+
+    static void Menu_Flip__Flip();
+    static void Menu_Flip__DoNotFlip();
+    static void Menu_Flip__BACK();    
 
     static std::vector<Device> pairedList;
     static std::vector<Device> scanList;

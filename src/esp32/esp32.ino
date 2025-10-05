@@ -3,6 +3,7 @@
 #include "Module.h"
 #include "Status.h"
 #include "Joypad.h"
+#include "Settings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -14,7 +15,7 @@ void setup()
     Status::initialise();
 
     Globals::tft.init();
-    Globals::tft.setRotation(1);
+    Settings::load();
     Globals::tft.fillScreen( TFT_BLACK );
 
     Joypad::initialise();

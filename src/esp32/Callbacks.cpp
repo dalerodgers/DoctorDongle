@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "Status.h"
+#include "Settings.h"
 
 #include "images/Note.h"
 #include "images/Headset.h"
@@ -58,6 +59,7 @@ void Callbacks::loop()
     }
     else
     {
+        lastButtonPress_ = millis();
         clr_Menu();
     }
 }
@@ -93,7 +95,7 @@ void Callbacks::clr_Menu()
     }
     else
     {
-        ; // do nothing
+        set_Menu( Globals::menu_Main );
     }    
 
     Status::refresh();
@@ -220,8 +222,16 @@ void Callbacks::Menu_Main__DeleteAll()
 
 ///////////////////////////////////////////////////////////////////////////
 
+void Callbacks::Menu_Main__Flip()
+{
+    set_Menu( Globals::menu_Flip );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 void Callbacks::Menu_Main__BACK()
 {
+    Globals::tft.fillScreen( TFT_BLACK );
     clr_Menu();
 }
 
@@ -336,6 +346,31 @@ void Callbacks::Menu_Delete__BACK()
 
 ///////////////////////////////////////////////////////////////////////////
 
+void Callbacks::Menu_Flip__Flip()
+{
+    Settings::flipOn();
+    Settings::save();
+    set_Menu( Globals::menu_Main );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::Menu_Flip__DoNotFlip()
+{
+    Settings::flipOff();
+    Settings::save();
+    set_Menu( Globals::menu_Main );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::Menu_Flip__BACK()
+{
+    set_Menu( Globals::menu_Main );
+}
+
+///////////////////////////////////////////////////////////////////////////
+
 void Callbacks::on_OK()
 {
     if( false == isOkay )
@@ -407,7 +442,6 @@ void Callbacks::on_AUDMODE( const int val )
     }
     else if( nullptr == menu_ )
     {
-
         set_Menu( Globals::menu_Main );
     }    
     else

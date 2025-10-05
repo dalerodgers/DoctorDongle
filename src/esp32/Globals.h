@@ -8,6 +8,7 @@
 #include "src/menus/Menu_PreviousConnections.h"
 #include "src/menus/Menu_Scanned.h"
 #include "src/menus/Menu_Delete.h"
+#include "src/menus/Menu_Flip.h"
 #include "SerialComms.h"
 
 namespace Globals
@@ -19,6 +20,7 @@ namespace Globals
     extern Menu_PreviousConnections menu_PreviousConnections;
     extern Menu_Scanned menu_Scanned;
     extern Menu_Delete menu_Delete;
+    extern Menu_Flip menu_Flip;
 
     extern Receiver receiver;
     extern SerialComms serialComms;
