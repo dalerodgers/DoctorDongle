@@ -59,6 +59,7 @@ void Callbacks::loop()
     }
     else
     {
+        lastButtonPress_ = millis();
         clr_Menu();
     }
 }
@@ -94,7 +95,7 @@ void Callbacks::clr_Menu()
     }
     else
     {
-        ; // do nothing
+        set_Menu( Globals::menu_Main );
     }    
 
     Status::refresh();
@@ -230,6 +231,7 @@ void Callbacks::Menu_Main__Flip()
 
 void Callbacks::Menu_Main__BACK()
 {
+    Globals::tft.fillScreen( TFT_BLACK );
     clr_Menu();
 }
 
@@ -440,7 +442,6 @@ void Callbacks::on_AUDMODE( const int val )
     }
     else if( nullptr == menu_ )
     {
-
         set_Menu( Globals::menu_Main );
     }    
     else
