@@ -20,6 +20,7 @@ public:
     static void button_LEFT( Button2& btn );
     static void button_RIGHT( Button2& btn );
     static void button_ENTER( Button2& btn );
+    static void button_RETURN( Button2& btn );
 
     static void Menu_Main__PreviousConnections();
     static void Menu_Main__ScanForNew();
@@ -57,6 +58,7 @@ public:
 
     static bool isConnected_A2DP;
     static bool isConnected_HFP;
+    static bool isMuted_HFP;
 
     static int micGain_A2DP;
     static int micGain_HFP;
@@ -85,11 +87,14 @@ protected:
 private:
     static Menu* menu_;
     static unsigned long lastButtonPress_;
+    static unsigned long lastMuteUpdate_;
 
     static void paintVolume( const int32_t x, const int32_t y );
     static void volumeUp( int& vol );
     static void volumeDown( int& vol );    
-    static void volumeSend();   
+    static void volumeSend();
+
+    static void updateMuted_HFP();
 };
 
 namespace Globals

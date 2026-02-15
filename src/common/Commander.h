@@ -26,7 +26,7 @@ public:
     void get_HFPSTAT();
     void get_MICGAIN();
     void set_MICGAIN( int a2dp, int hfp );
-    void set_SPKVOL();
+    void set_SPKVOL( int a2dp, int hfp );
     void clr_PLIST();
     void req_PLIST();
     void set_AUDROUTE__A2DP();

@@ -11,6 +11,7 @@
 
 Menu* Callbacks::menu_ = nullptr;
 unsigned long Callbacks::lastButtonPress_;
+unsigned long Callbacks::lastMuteUpdate_ = 0U;
 
 std::vector<Device> Callbacks::pairedList;
 std::vector<Device> Callbacks::scanList;
@@ -33,6 +34,7 @@ const Menu::FuncPtr Callbacks::Menu_Scanned_N[Menu::MAX_OPTIONS] =
 
 bool Callbacks::isConnected_A2DP = false;
 bool Callbacks::isConnected_HFP = false;
+bool Callbacks::isMuted_HFP = false;
 
 int Callbacks::micGain_A2DP = -1;
 int Callbacks::micGain_HFP = -1;
@@ -62,6 +64,8 @@ void Callbacks::loop()
         lastButtonPress_ = millis();
         clr_Menu();
     }
+
+    updateMuted_HFP();    
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -77,10 +81,12 @@ void Callbacks::set_Menu( Menu &menu )
 
 void Callbacks::clr_Menu()
 {
+    Globals::tft.invertDisplay( true );
+
     if( 1 == audMode )
     {
         menu_ = nullptr;
-
+ 
         Globals::tft.pushImage( 0, 0, Note_WIDTH, Note_HEIGHT, Note );
         Globals::tft.fillTriangle( 225, 55, 225, 65, 235, 60, TFT_WHITE );
         paintVolume( 219, 10 );
@@ -88,6 +94,7 @@ void Callbacks::clr_Menu()
     else if( 2 == audMode )
     {
         menu_ = nullptr;      
+        isMuted_HFP = false;
 
         Globals::tft.pushImage( 0, 0, Headset_WIDTH, Headset_HEIGHT, Headset );
         Globals::tft.fillTriangle( 5, 60, 15, 55, 15, 65, TFT_WHITE );
@@ -191,10 +198,37 @@ void Callbacks::button_ENTER( Button2& btn )
     {
         menu_->enter();
     }
+    else if( 2 == audMode )
+    {
+        if( isMuted_HFP )
+        {
+            Globals::commander.set_SPKVOL( 15, 15 );
+          
+            isMuted_HFP = false;
+            Globals::tft.invertDisplay( true );      
+        }
+        else
+        {        
+            Globals::commander.set_SPKVOL( 15, 0 );
+
+            isMuted_HFP = true;
+            lastMuteUpdate_ = 0U;
+        } 
+    }
     else
     {
-        set_Menu( Globals::menu_Main );
+        ; // do nothing
     }
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::button_RETURN( Button2& btn )
+{
+    static_cast<void>( btn );
+    lastButtonPress_ = millis();
+
+    set_Menu( Globals::menu_Main );
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -556,6 +590,29 @@ void Callbacks::volumeSend()
 {
     Globals::commander.set_MICGAIN( micGain_A2DP, micGain_HFP );
     Globals::commander.get_MICGAIN();    
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+void Callbacks::updateMuted_HFP()
+{
+    if( ( 2 == audMode ) && isMuted_HFP )
+    {
+        if( ( millis() - lastMuteUpdate_ ) > 1000U )
+        {
+            Globals::tft.invertDisplay( true );
+            lastMuteUpdate_ = millis();
+        }
+        else if( ( millis() - lastMuteUpdate_ ) > 500U )
+        {
+            Globals::tft.invertDisplay( false );
+        }
+        else
+        {
+            ; //do nothing
+        }
+        
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////

@@ -31,7 +31,7 @@ void Commander::defaults()
     get_A2DPSTAT();
     get_HFPSTAT();
     get_MICGAIN();
-    set_SPKVOL();
+    set_SPKVOL( 15, 15 );
     set_AUDROUTE__None();
     req_PLIST();
 }
@@ -132,11 +132,22 @@ void Commander::set_MICGAIN( int a2dp, int hfp )
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void Commander::set_SPKVOL()
+void Commander::set_SPKVOL( int a2dp, int hfp )
 {
     if( nullptr != requiredIf_ )
     {
-        requiredIf_->Transmit( "AT+SPKVOL=15,15" );
+        if( a2dp > 15 )
+        {
+            a2dp = 15;
+        }
+
+        if( hfp > 15 )
+        {
+            hfp = 15;
+        }
+
+        const std::string temp( "AT+SPKVOL=" + std::to_string( a2dp ) + "," + std::to_string( hfp ) );
+        requiredIf_->Transmit( temp.c_str() );
     }
 }
 

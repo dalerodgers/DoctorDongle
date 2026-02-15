@@ -31,7 +31,9 @@ void Joypad::initialise()
     button_DOWN.setTripleClickHandler( &Callbacks::button_RIGHT );    
 #else
     onFlipChange();
-    button_E.setTapHandler( &Callbacks::button_ENTER );
+    button_E.setClickHandler( &Callbacks::button_ENTER );
+    button_E.setLongClickDetectedHandler( &Callbacks::button_RETURN );
+    button_E.setLongClickTime( 1000 );
 #endif
 }
 
